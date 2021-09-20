@@ -1,0 +1,32 @@
+//------------------------------------------------
+//--- 010 Editor v12.0 Binary Template
+//
+//      File: RSDT.bt
+//   Authors: James Swineson
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+/* basic data types for compatibility */
+typedef char CHAR8;
+typedef ubyte UINT8;
+
+/* ACPI standard structs */
+typedef struct // Root System Description Table (RSDT) header
+{
+	CHAR8 Signature[8];
+	UINT8 Checksum;
+	UINT8 OemId[6];
+	UINT8 Revision;
+	UINT32 RsdtAddress;
+	UINT32 Length;
+	UINT64 XsdtAddress;
+	UINT8 ExtendedChecksum;
+	UINT8 Reserved[3];
+} EFI_ACPI_2_0_ROOT_SYSTEM_DESCRIPTION_POINTER;
+
+EFI_ACPI_2_0_ROOT_SYSTEM_DESCRIPTION_POINTER RSDT;

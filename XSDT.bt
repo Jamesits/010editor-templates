@@ -1,0 +1,71 @@
+//------------------------------------------------
+//--- 010 Editor v12.0 Binary Template
+//
+//      File: XSDT.bt
+//   Authors: James Swineson
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+/* basic data types for compatibility */
+typedef char CHAR8;
+typedef ubyte UINT8;
+
+/* ACPI standard structs */
+typedef struct // ACPI System Description Table (SDT) header
+{
+	CHAR8 Signature[4];
+	UINT32 Length;
+	UINT8 Revision;
+
+    SetForeColor(acpi_checksum_color(parentof(this)));
+	UINT8 Checksum <format=hex>;
+    SetForeColor(cNone);
+
+	CHAR8 OemId[6];
+	CHAR8 OemTableId[8];
+	UINT32 OemRevision;
+	UINT32 CreatorId;
+	UINT32 CreatorRevision;
+} EFI_ACPI_SDT_HEADER <size=36>;
+
+/* datatypes required for display */
+typedef union (int length)
+{
+    uchar content[length - sizeof(EFI_ACPI_SDT_HEADER)];
+} acpi_table_content_resolver;
+
+typedef struct 
+{
+    EFI_ACPI_SDT_HEADER header <bgcolor=cGreen>;
+    acpi_table_content_resolver content(header.Length) <name="Content">;
+} acpi_table <size=sizeOfSDT>;
+
+int sizeOfSDT(acpi_table &r)
+{
+    return ReadUInt(startof(r) + 4);
+}
+
+/* helper functions */
+ubyte acpi_checksum(acpi_table &table)
+{
+    return Checksum(CHECKSUM_BYTE, startof(table), table.header.Length);
+}
+
+char acpi_checksum_color(acpi_table &table)
+{
+    if (acpi_checksum(table) == 0) return cNone; else return cRed;
+}
+
+/* binary structure */
+local int offset = 0;
+while(1)
+{
+    acpi_table table <name=this.header.Signature, comment=(this.header.Signature + " OEM=" + this.header.OemId)>;
+    offset += table.header.Length;
+    if (FSeek(offset) || FEof()) break;
+}

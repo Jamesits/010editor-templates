@@ -1,0 +1,25 @@
+//------------------------------------------------
+//--- 010 Editor v10.0 Binary Template
+//
+//      File: ACPI.bt
+//   Authors: James Swineson
+//   Version: 0.1
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+struct
+{
+	char Signature[4];
+	uint32 Length;
+	uchar Revision;
+	uchar Checksum;
+	char OemId[6];
+	char OemTableId[4];
+	uint32 OemRevision;
+	char CreatorId[4];
+	uint32 CreatorRevision;
+} EFI_ACPI_DESCRIPTION_HEADER;
